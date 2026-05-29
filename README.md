@@ -2,6 +2,11 @@
 
 > Stop writing "fixed stuff". Never stare at a blank commit message again.
 
+[![GitHub stars](https://img.shields.io/github/stars/zhirenhun-stack/git-copilot?style=social)](https://github.com/zhirenhun-stack/git-copilot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+[![Gumroad](https://img.shields.io/badge/Buy%20Pro%20Templates-%2345ADA8?logo=gumroad)](https://zhirenhun.gumroad.com/l/git-copilot-pro)
+
 **git-copilot** reads your staged changes and generates a conventional commit message instantly. No AI, no API keys, no internet required — pure pattern matching.
 
 ```bash
@@ -10,6 +15,8 @@ $ git-copilot gen
 ✨ feat(api): add user routes and controller
 3 file(s), +124/-15 lines
 ```
+
+---
 
 ## Why?
 
@@ -21,10 +28,9 @@ $ git-copilot gen
 ## Install
 
 ```bash
-# pip install git-copilot
 pip install git-copilot
 
-# Or install from source
+# Or from source
 git clone https://github.com/zhirenhun-stack/git-copilot
 cd git-copilot
 pip install -e .
@@ -33,20 +39,11 @@ pip install -e .
 ## Usage
 
 ```bash
-# Generate message from staged changes
-git-copilot gen
-
-# Force a specific commit type
-git-copilot gen --type fix
-
-# Init config (~/.config/git-copilot/config.json)
-git-copilot init
-
-# View current config
-git-copilot config
-
-# Use directly as git commit
-git-copilot gen | git commit -F -
+git-copilot gen              # Generate from staged changes
+git-copilot gen --type fix   # Force a type
+git-copilot init             # Create config
+git-copilot config           # View config
+git-copilot gen | git commit -F -   # Use as commit
 ```
 
 ## How it works
@@ -61,26 +58,11 @@ git-copilot gen | git commit -F -
 | `.css` / `.scss` | style |
 | `config.json` / `.yaml` | chore |
 
-And **scope** is inferred from directory names: `api/`, `ui/`, `db/`, `auth/`, `config/`, etc.
-
-## Configuration
-
-```json
-{
-  "types": {
-    "feat": { "description": "A new feature", "emoji": "✨" },
-    "fix": { "description": "A bug fix", "emoji": "🐛" },
-    ...
-  },
-  "max_subject_length": 72,
-  "include_scope": true,
-  "breaking_change_marker": "!"
-}
-```
+**Scope** is inferred from directory names: `api/`, `ui/`, `db/`, `auth/`, `config/`, etc.
 
 ## Real-world use
 
-Drop this in your git hooks:
+Hook it in:
 
 ```bash
 #!/bin/bash
@@ -88,8 +70,30 @@ Drop this in your git hooks:
 git-copilot gen > "$1"
 ```
 
-Or use as a VS Code keybinding — because `git commit -m "stuff"` is a crime.
+Or VS Code keybindings — because `git commit -m "stuff"` is a crime.
+
+---
+
+## 📦 Git Commit Copilot Pro — Premium Templates Pack
+
+The CLI above is **free and open-source (MIT)**. For teams and power users, the **Pro Templates Pack** adds:
+
+| Feature | Free (CLI) | Pro (Gumroad) |
+|---------|:----------:|:--------------:|
+| Auto-detect type + scope | ✅ | ✅ |
+| Conventional Commits spec | ✅ | ✅ |
+| Configurable types & emojis | ✅ | ✅ |
+| **Custom commit templates** | ❌ | ✅ |
+| **Multi-line body templates** | ❌ | ✅ |
+| **CI/CD-ready output formats** | ❌ | ✅ |
+| **Breaking change tracking** | ❌ | ✅ |
+| **Team convention presets** | ❌ | ✅ |
+| **Issue tracker integration** | ❌ | ✅ |
+| **Priority updates** | ❌ | ✅ |
+| **Price** | **Free** | **$9.99** |
+
+👉 **[Get the Pro Templates Pack on Gumroad](https://zhirenhun.gumroad.com/l/git-copilot-pro)**
 
 ## License
 
-MIT
+MIT — the CLI itself is and always will be free.
