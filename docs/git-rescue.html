@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Rescue — Undo, Revert & Fix Git Mistakes Instantly</title>
+    <meta name="description" content="Can't undo a git commit? Stuck in a merge? Git Rescue tells you the exact command to fix any git mistake. Free, no install.">
+    <meta name="keywords" content="git undo, git revert, git reset, how to undo git commit, git fix mistake, git rescue">
+    <meta property="og:title" content="Git Rescue — Undo Any Git Mistake">
+    <meta property="og:description" content="Select what went wrong, get the exact git command to fix it. Free and instant.">
+    <style>
+        :root { --bg: #0f172a; --fg: #e2e8f0; --accent: #3b82f6; --green: #22c55e; --red: #ef4444; --card: #1e293b; --border: #334155; --muted: #64748b; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background:var(--bg); color:var(--fg); line-height:1.6; }
+        .container { max-width: 800px; margin:0 auto; padding:0 20px; }
+        header { text-align:center; padding:60px 0 30px; }
+        header h1 { font-size:2.5rem; font-weight:800; }
+        header h1 span { color:var(--accent); }
+        header p { color:var(--muted); margin-top:10px; font-size:1.1rem; }
+        .tool-section { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:32px; margin:20px 0; }
+        label { display:block; font-weight:600; margin-bottom:10px; font-size:1rem; }
+        select, textarea { width:100%; padding:12px 16px; background:var(--bg); border:1px solid var(--border); border-radius:10px; color:var(--fg); font-size:1rem; outline:none; transition:border-color 0.2s; }
+        select:focus, textarea:focus { border-color:var(--accent); }
+        textarea { min-height:100px; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size:0.85rem; resize:vertical; }
+        .cmd-box { background:#1a1b26; border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:20px 0; display:none; position:relative; }
+        .cmd-box code { display:block; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size:1rem; color:#c0caf5; white-space:pre-wrap; word-break:break-all; }
+        .cmd-box .copy-btn { position:absolute; right:12px; top:12px; background:var(--card); border:1px solid var(--border); color:var(--muted); padding:4px 12px; border-radius:6px; font-size:0.75rem; cursor:pointer; }
+        .cmd-box .copy-btn:hover { color:var(--fg); border-color:var(--accent); }
+        .cmd-box .desc { color:var(--muted); font-size:0.9rem; margin-top:10px; }
+        .btn-primary { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border-radius:10px; font-size:1rem; font-weight:600; text-decoration:none; background:var(--accent); color:white; border:none; cursor:pointer; transition:all 0.2s; }
+        .btn-primary:hover { background:#2563eb; }
+        .btn-green { background:var(--green); color:var(--bg); padding:8px 20px; border-radius:8px; text-decoration:none; font-weight:600; font-size:0.9rem; display:inline-block; margin-top:15px; }
+        .tagline { text-align:center; padding:20px 0 40px; border-top:1px solid var(--border); margin-top:30px; }
+        .tagline a { color:var(--accent); text-decoration:none; }
+        @media (max-width:600px) { header h1 { font-size:1.8rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🐛 Git <span>Rescue</span></h1>
+        <p>Select what went wrong. Get the exact command to fix it.</p>
+    </header>
+
+    <div class="tool-section">
+        <label for="scenario">What do you want to undo?</label>
+        <select id="scenario" onchange="showCommand()">
+            <option value="">— Select a scenario —</option>
+            <option value="commit-local">Undo the last commit (keep changes)</option>
+            <option value="commit-hard">Undo the last commit (discard changes)</option>
+            <option value="commit-pushed">Undo a commit I already pushed</option>
+            <option value="commit-old">Undo a specific older commit</option>
+            <option value="message">Fix the last commit message</option>
+            <option value="add">Unstage a file (undo git add)</option>
+            <option value="discard">Discard all local changes</option>
+            <option value="file">Restore a deleted file</option>
+            <option value="merge-abort">Abort a merge in progress</option>
+            <option value="stash-pop">Undo a git stash pop (conflict)</option>
+            <option value="branch-delete">Delete a branch</option>
+            <option value="rebase-abort">Abort a rebase in progress</option>
+        </select>
+
+        <div id="cmdBox" class="cmd-box">
+            <code id="cmdCode"></code>
+            <button class="copy-btn" onclick="copyCmd()">📋 Copy</button>
+            <div class="desc" id="cmdDesc"></div>
+        </div>
+    </div>
+
+    <div class="tool-section">
+        <label for="custom">Or describe your situation:</label>
+        <textarea id="custom" placeholder="e.g. I committed to the wrong branch and pushed..."></textarea>
+        <button class="btn-primary" onclick="handleCustom()" style="margin-top:12px;">🔍 Get Command</button>
+        <div id="customResult" class="cmd-box"></div>
+    </div>
+
+    <div class="tagline">
+        <p>📖 <b>New!</b> Get the full <a href="https://zhirenhun.gumroad.com/l/git-rescue-guide" style="color:var(--accent);font-weight:600;">Git Rescue eBook ($4.99)</a> — 15 commands, 8 pages, printable cheatsheet.</p>
+        <p>Or try <a href="https://github.com/zhirenhun-stack/git-copilot">git-copilot</a> for automated commit messages.</p>
+        <a href="https://zhirenhun.gumroad.com/l/git-copilot-pro" class="btn-green">⬆ Pro Templates Pack $9.99</a>
+    </div>
+</div>
+
+<script>
+const commands = {
+    'commit-local': {
+        cmd: 'git reset --soft HEAD~1',
+        desc: 'Removes the last commit but keeps your changes staged. Run another commit after fixing files.'
+    },
+    'commit-hard': {
+        cmd: 'git reset --hard HEAD~1',
+        desc: '⚠️ Destructive! Removes the last commit AND all changes. Use with caution.'
+    },
+    'commit-pushed': {
+        cmd: 'git revert <commit-hash>\ngit push origin <branch>',
+        desc: 'Creates a NEW commit that undoes the pushed commit. Safe for shared branches. Replace &lt;commit-hash&gt; with the commit ID from git log.'
+    },
+    'commit-old': {
+        cmd: 'git log --oneline -10\ngit revert <commit-hash>',
+        desc: 'Pick the commit hash from the log, then revert it. Creates a new undo commit.'
+    },
+    'message': {
+        cmd: 'git commit --amend -m "New commit message"',
+        desc: 'Only works if the commit hasn\'t been pushed yet. For pushed commits, use git revert + re-commit.'
+    },
+    'add': {
+        cmd: 'git restore --staged <file>',
+        desc: 'Unstages the file but keeps your changes. File stays modified in working directory.'
+    },
+    'discard': {
+        cmd: 'git restore .',
+        desc: '⚠️ Destructive! Discards ALL uncommitted changes in the working directory. Cannot be undone.'
+    },
+    'file': {
+        cmd: 'git checkout HEAD -- <path/to/file>',
+        desc: 'Restores a file to its state in the last commit. Use git log to find the file path.'
+    },
+    'merge-abort': {
+        cmd: 'git merge --abort',
+        desc: 'Stops the merge and returns your repo to the state before git merge was run.'
+    },
+    'stash-pop': {
+        cmd: 'git checkout --theirs <file>\n# Or: git checkout --ours <file>',
+        desc: 'When git stash pop causes conflicts, resolve them manually or pick theirs/ours per file.'
+    },
+    'branch-delete': {
+        cmd: 'git branch -d <branch-name>\n# Force delete: git branch -D <branch-name>',
+        desc: 'Use -d (safe delete, checks for unmerged) or -D (force delete).'
+    },
+    'rebase-abort': {
+        cmd: 'git rebase --abort',
+        desc: 'Stops the rebase and returns your branch to its original state before rebase started.'
+    }
+};
+
+function showCommand() {
+    const val = document.getElementById('scenario').value;
+    const box = document.getElementById('cmdBox');
+    const code = document.getElementById('cmdCode');
+    const desc = document.getElementById('cmdDesc');
+    if (val && commands[val]) {
+        code.textContent = commands[val].cmd;
+        desc.innerHTML = commands[val].desc;
+        box.style.display = 'block';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+function copyCmd() {
+    const text = document.getElementById('cmdCode').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✅ Copied';
+        setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+}
+
+function handleCustom() {
+    const val = document.getElementById('custom').value.trim().toLowerCase();
+    const box = document.getElementById('customResult');
+    if (!val) {
+        box.textContent = 'Please describe your situation.';
+        box.style.display = 'block';
+        return;
+    }
+    // Map keywords to commands
+    let cmd = '';
+    let desc = '';
+    if (val.includes('amend') || val.includes('message')) {
+        cmd = 'git commit --amend -m "New message"';
+        desc = 'Fix the last commit message. Only works before pushing.';
+    } else if (val.includes('merge')) {
+        cmd = 'git merge --abort';
+        desc = 'Abort the merge. Your branch goes back to before the merge.';
+    } else if (val.includes('stash')) {
+        cmd = 'git stash list\ngit stash apply stash@{0}';
+        desc = 'This gets your stashed changes back. Use git stash list to see all stashes.';
+    } else if (val.includes('wrong branch')) {
+        cmd = 'git log --oneline -1  # note the hash\ngit reset HEAD~1 --soft\ngit stash\ngit checkout correct-branch\ngit stash pop\ngit add .\ngit commit -m "message"';
+        desc = 'Undo the commit, stash changes, switch branch, re-commit on the right branch.';
+    } else if (val.includes('delete') || val.includes('remove')) {
+        cmd = 'git branch -d <branch-name>';
+        desc = 'Delete a local branch. Add -D to force delete.';
+    } else if (val.includes('rebase')) {
+        cmd = 'git rebase --abort';
+        desc = 'Abort the rebase. Your branch goes back to its pre-rebase state.';
+    } else {
+        cmd = 'git log --oneline -5\n# Then: git reset --soft HEAD~1  (undo last commit)';
+        desc = 'Start with git log to see recent commits, then pick the right undo command.';
+    }
+    box.innerHTML = `<code style="display:block;font-family:monospace;font-size:1rem;color:#c0caf5;white-space:pre-wrap;">${cmd}</code><div class="desc">${desc}</div>`;
+    box.style.display = 'block';
+}
+</script>
+</body>
+</html>
