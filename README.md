@@ -4,8 +4,8 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/zhirenhun-stack/git-copilot?style=social)](https://github.com/zhirenhun-stack/git-copilot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
-[![Gumroad](https://img.shields.io/badge/Buy%20Pro%20Templates-%2345ADA8?logo=gumroad)](https://zhirenhun.gumroad.com/l/git-copilot-pro)
+[![CI](https://github.com/zhirenhun-stack/git-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/zhirenhun-stack/git-copilot/actions/workflows/ci.yml)
+[![Try it](https://img.shields.io/badge/Try%20it%E2%86%92-8A2BE2?logo=dev.to)](https://dev.to/z_z_c01afd7cf4c3764a2c73d/stop-writing-fixed-stuff-a-practical-guide-to-commit-messages-that-dont-suck-2g6c)
 
 **git-copilot** reads your staged changes and generates a conventional commit message instantly. No AI, no API keys, no internet required — pure pattern matching.
 
