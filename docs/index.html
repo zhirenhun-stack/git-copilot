@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git-copilot — Smart Git Commit Messages, Zero AI</title>
+    <meta name="description" content="Generate conventional commit messages from your staged changes. No AI, no API keys, no internet. Free and open-source.">
+    <meta name="keywords" content="git, commit, conventional commits, CLI, developer tool, automation">
+    <meta property="og:title" content="git-copilot — Smart Git Commit Messages, Zero AI">
+    <meta property="og:description" content="Stop writing 'fixed stuff'. Never stare at a blank commit message again.">
+    <meta property="og:url" content="https://zhirenhun-stack.github.io/git-copilot/">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --fg: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --green: #22c55e;
+            --muted: #64748b;
+            --card: #1e293b;
+            --border: #334155;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.6;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        .hero h1 span { color: var(--accent); }
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .badges { margin-bottom: 30px; }
+        .badges img { height: 24px; margin: 0 4px; }
+        .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 28px; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; cursor: pointer; border: none;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-secondary { background: var(--card); color: var(--fg); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--accent); transform: translateY(-1px); }
+        .btn-green { background: var(--green); color: var(--bg); }
+
+        /* Terminal Demo */
+        .terminal {
+            background: #1a1b26;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 50px auto;
+            max-width: 750px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .terminal-header {
+            display: flex; gap: 8px; margin-bottom: 20px;
+        }
+        .terminal-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+        }
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+        .terminal-title {
+            font-size: 0.8rem; color: var(--muted); margin-left: 12px;
+            flex: 1; text-align: center;
+        }
+        .terminal pre {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #a9b1d6;
+            overflow-x: auto;
+        }
+        .terminal .prompt { color: var(--accent); }
+        .terminal .output { color: var(--green); }
+        .terminal .comment { color: var(--muted); font-style: italic; }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            transition: border-color 0.2s;
+        }
+        .card:hover { border-color: var(--accent); }
+        .card-icon { font-size: 2rem; margin-bottom: 12px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+
+        /* Install */
+        .install {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .install h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .install .subtitle {
+            color: var(--muted);
+            margin-bottom: 40px;
+        }
+        .code-block {
+            background: #1a1b26;
+            border-radius: 10px;
+            padding: 16px 20px;
+            text-align: left;
+            max-width: 650px;
+            margin: 10px auto;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .code-block code {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #c0caf5;
+        }
+        .code-block .copy-btn {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .code-block .copy-btn:hover { color: var(--fg); border-color: var(--accent); }
+
+        /* Pricing */
+        .pricing {
+            padding: 80px 0;
+        }
+        .pricing h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .pricing-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+        }
+        .pricing-card.featured {
+            border-color: var(--accent);
+            position: relative;
+        }
+        .pricing-card.featured::before {
+            content: 'Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .pricing-card .price { font-size: 2.5rem; font-weight: 800; margin: 20px 0; }
+        .pricing-card .price small { font-size: 1rem; font-weight: 400; color: var(--muted); }
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 20px 0;
+        }
+        .pricing-card ul li {
+            padding: 8px 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        .pricing-card ul li::before { content: '✅ '; }
+        .pricing-card ul li.no::before { content: '❌ '; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero { padding: 60px 0 40px; }
+            .cta-buttons .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="container">
+            <div class="badges">
+                <img src="https://img.shields.io/github/stars/zhirenhun-stack/git-copilot?style=social" alt="Stars">
+                <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+                <img src="https://img.shields.io/badge/Try%20it-%238A2BE2?logo=dev.to" alt="Try it">
+            </div>
+            <h1>Stop writing <span>"fixed stuff"</span>.</h1>
+            <p>git-copilot reads your staged changes and generates a conventional commit message in milliseconds. No AI, no API keys, no internet.</p>
+            <div class="cta-buttons">
+                <a href="#install" class="btn btn-primary">⚡ Try It Now</a>
+                <a href="https://github.com/zhirenhun-stack/git-copilot" class="btn btn-secondary">View on GitHub</a>
+                <a href="https://zhirenhun.gumroad.com/l/git-copilot-pro" class="btn btn-green">⬆ Buy Pro $9.99</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <div class="terminal-title">git-copilot</div>
+            </div>
+            <pre><span class="comment"># Demo: generate a commit message from staged changes</span>
+<span class="prompt">$</span> git add .
+<span class="prompt">$</span> git-copilot gen
+<span class="output">✨ feat(api): add user routes and controller
+3 file(s), +124/-15 lines</span>
+
+<span class="comment"># Force a type, or use as a git hook</span>
+<span class="prompt">$</span> git-copilot gen --type fix
+<span class="output">🐛 fix(auth): handle token expiration on 401
+2 file(s), +45/-8 lines</span></pre>
+        </div>
+    </div>
+
+    <section class="features">
+        <div class="container">
+            <h2>Why developers love it</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Instant generation</h3>
+                    <p>5 seconds instead of 2 minutes thinking of a message. Works on repos of any size.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Zero AI, zero API</h3>
+                    <p>Pure pattern matching. Your code never leaves your machine. No API keys, no costs, no privacy concerns.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📐</div>
+                    <h3>Conventional Commits</h3>
+                    <p>Every message follows the Conventional Commits spec. Auto-detects type (feat, fix, docs, test...) and scope.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🐍</div>
+                    <h3>Zero dependencies</h3>
+                    <p>Pure Python stdlib. One file. Works on any machine with Python 3.8+. No npm, no Docker, no nothing.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔌</div>
+                    <h3>Works everywhere</h3>
+                    <p>Use it standalone, as a git hook, in CI/CD, or with VS Code keybindings. No modifications to your workflow.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🆓</div>
+                    <h3>Free and open-source</h3>
+                    <p>MIT license. The CLI is and always will be free. Pro templates are available for teams and power users.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="install" id="install">
+        <div class="container">
+            <h2>Get started in 3 seconds</h2>
+            <p class="subtitle">No installation required — just curl it and use it.</p>
+
+            <div class="code-block">
+                <code>curl -sL https://git.io/git-copilot | python3 - gen</code>
+            </div>
+
+            <p class="subtitle" style="margin-top: 30px;">Or install it permanently:</p>
+
+            <div class="code-block">
+                <code>curl -sL https://raw.githubusercontent.com/zhirenhun-stack/git-copilot/main/install.sh | bash</code>
+            </div>
+
+            <div class="code-block" style="margin-top: 12px;">
+                <code># Or download the standalone script
+curl -sL https://raw.githubusercontent.com/zhirenhun-stack/git-copilot/main/git-copilot &gt; /usr/local/bin/git-copilot
+chmod +x /usr/local/bin/git-copilot</code>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing">
+        <div class="container">
+            <h2>Free for life, Pro when you need it</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="price">$0<small>/forever</small></div>
+                    <ul>
+                        <li>Auto-detect type + scope</li>
+                        <li>Conventional Commits spec</li>
+                        <li>Configurable types & emojis</li>
+                        <li>Customizable subject length</li>
+                        <li class="no">Custom commit templates</li>
+                        <li class="no">Multi-line body templates</li>
+                        <li class="no">CI/CD output formats</li>
+                    </ul>
+                    <a href="https://github.com/zhirenhun-stack/git-copilot" class="btn btn-secondary" style="width:100%;justify-content:center;">Download</a>
+                </div>
+                <div class="pricing-card featured">
+                    <h3>Pro Templates Pack</h3>
+                    <div class="price">$9.99<small></small></div>
+                    <ul>
+                        <li>Everything in Free</li>
+                        <li>Custom commit templates (Angular, emoji, minimal)</li>
+                        <li>Multi-line body templates</li>
+                        <li>CI/CD-ready output (commitlint, semantic-release)</li>
+                        <li>Breaking change tracking</li>
+                        <li>Team convention presets</li>
+                        <li>Priority updates & support</li>
+                    </ul>
+                    <a href="https://zhirenhun.gumroad.com/l/git-copilot-pro" class="btn btn-green" style="width:100%;justify-content:center;">Buy Now — $9.99</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>git-copilot — MIT Licensed | <a href="https://github.com/zhirenhun-stack/git-copilot">GitHub</a> | <a href="https://zhirenhun.gumroad.com/l/git-copilot-pro">Gumroad</a></p>
+        </div>
+    </footer>
+</body>
+</html>
