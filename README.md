@@ -27,10 +27,24 @@ $ git-copilot gen
 
 ## Install
 
+### One-liner (recommended)
+
+```bash
+curl -sL https://raw.githubusercontent.com/zhirenhun-stack/git-copilot/main/git-copilot > /usr/local/bin/git-copilot && chmod +x /usr/local/bin/git-copilot
+
+# Or via install.sh
+curl -sL https://raw.githubusercontent.com/zhirenhun-stack/git-copilot/main/install.sh | bash
+```
+
+### pip (coming soon)
+
 ```bash
 pip install git-copilot
+```
 
-# Or from source
+### From source
+
+```bash
 git clone https://github.com/zhirenhun-stack/git-copilot
 cd git-copilot
 pip install -e .

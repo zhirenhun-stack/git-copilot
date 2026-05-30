@@ -1,0 +1,39 @@
+{
+  "types": {
+    "feat": { "emoji": "✨", "description": "A new feature" },
+    "fix": { "emoji": "🐛", "description": "A bug fix" },
+    "docs": { "emoji": "📝", "description": "Documentation only" },
+    "style": { "emoji": "💄", "description": "Styles/formatting" },
+    "refactor": { "emoji": "♻️", "description": "Code refactoring" },
+    "perf": { "emoji": "⚡", "description": "Performance" },
+    "test": { "emoji": "✅", "description": "Tests" },
+    "build": { "emoji": "📦", "description": "Build system" },
+    "ci": { "emoji": "👷", "description": "CI/CD" },
+    "chore": { "emoji": "🔧", "description": "Chores" },
+    "revert": { "emoji": "⏪", "description": "Revert" },
+    "wip": { "emoji": "🚧", "description": "Work in progress" },
+    "security": { "emoji": "🔒", "description": "Security fix" },
+    "deprecate": { "emoji": "⚠️", "description": "Deprecation" },
+    "data": { "emoji": "🗃️", "description": "Data layer changes" },
+    "i18n": { "emoji": "🌐", "description": "Internationalization" },
+    "a11y": { "emoji": "♿", "description": "Accessibility" },
+    "docker": { "emoji": "🐳", "description": "Docker" }
+  },
+  "scopes": {
+    "api": ["api", "route", "endpoint", "controller"],
+    "ui": ["component", "page", "view", "template"],
+    "db": ["migration", "sql", "model", "query"],
+    "auth": ["login", "session", "permission"],
+    "config": ["config", "env", "setting"],
+    "docs": ["doc", "readme", "changelog"],
+    "ci": ["github", "actions", "docker"],
+    "cli": ["cli", "command", "flag"],
+    "core": ["core", "kernel", "engine"],
+    "plugin": ["plugin", "extension", "addon"]
+  },
+  "max_subject_length": 100,
+  "include_emoji": true,
+  "include_scope": true,
+  "breaking_change_marker": "!",
+  "default_type": "chore"
+}

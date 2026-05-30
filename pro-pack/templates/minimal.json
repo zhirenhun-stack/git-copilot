@@ -1,0 +1,15 @@
+{
+  "types": {
+    "feat": { "emoji": "", "description": "Feature" },
+    "fix": { "emoji": "", "description": "Fix" },
+    "chore": { "emoji": "", "description": "Chore" },
+    "docs": { "emoji": "", "description": "Docs" },
+    "refactor": { "emoji": "", "description": "Refactor" },
+    "test": { "emoji": "", "description": "Test" },
+    "ci": { "emoji": "", "description": "CI" }
+  },
+  "include_emoji": false,
+  "include_scope": true,
+  "max_subject_length": 50,
+  "breaking_change_marker": "!"
+}

@@ -1,0 +1,17 @@
+{
+  "Conventional Commit": {
+    "prefix": "cc",
+    "body": "${1|feat,fix,docs,style,refactor,perf,test,build,ci,chore|}(${2:scope}): ${3:description}",
+    "description": "Conventional commit message"
+  },
+  "Feat Commit": {
+    "prefix": "feat",
+    "body": "feat(${1:scope}): ${2:description}",
+    "description": "Feature commit"
+  },
+  "Fix Commit": {
+    "prefix": "fix",
+    "body": "fix(${1:scope}): ${2:description}",
+    "description": "Bug fix commit"
+  }
+}

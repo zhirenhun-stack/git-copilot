@@ -1,0 +1,19 @@
+{
+  "types": {
+    "feat": { "emoji": "✨", "description": "New feature" },
+    "fix": { "emoji": "🐛", "description": "Bug fix" },
+    "docs": { "emoji": "📝", "description": "Documentation" },
+    "style": { "emoji": "💄", "description": "Style" },
+    "refactor": { "emoji": "♻️", "description": "Refactor" },
+    "perf": { "emoji": "⚡", "description": "Performance" },
+    "test": { "emoji": "✅", "description": "Tests" },
+    "build": { "emoji": "📦", "description": "Build" },
+    "ci": { "emoji": "👷", "description": "CI" },
+    "chore": { "emoji": "🔧", "description": "Chore" },
+    "revert": { "emoji": "⏪", "description": "Revert" }
+  },
+  "include_emoji": true,
+  "include_scope": false,
+  "max_subject_length": 72,
+  "breaking_change_marker": "!"
+}

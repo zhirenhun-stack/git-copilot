@@ -1,0 +1,21 @@
+name: Commit Lint
+
+on: [push, pull_request]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check commit messages
+        run: |
+          pip install git-copilot
+          git log --oneline -5 | while read line; do
+            if ! echo "$line" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)'; then
+              echo "❌ Invalid commit: $line"
+              exit 1
+            fi
+          done
+          echo "✅ All commits valid"
